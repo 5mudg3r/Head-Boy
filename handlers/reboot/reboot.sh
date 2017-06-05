@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "You sent the /reboot command... Congratulations :)"
+shutdown -r +1 "System will reboot in 1 min"

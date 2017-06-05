@@ -1,0 +1,7 @@
+# command handlers for each command
+# please keep this list alphabetical 
+# format:
+# telegram command|handler program
+list|handlers/list/list.py
+newuser|handlers/newuser/newuser.sh
+reboot|handlers/reboot/reboot.sh

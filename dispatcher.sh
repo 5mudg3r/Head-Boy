@@ -54,7 +54,7 @@ function send_busy() {
 	> /dev/null
 }
 function send_error() {
-	# 1 = log level ("DEBUG", INFO", "MINOR", "MAJOR", "FATAL")
+	# 1 = log level ("DEBUG", "INFO", "MINOR", "MAJOR", "FATAL")
 	# 2 = message
 	curl -s -S \
 	--data-urlencode "chat_id=$admin" \
@@ -100,7 +100,6 @@ fi
 if [ "${text:0:1}" != "/" ]; then
   # this is not a command, so ignore it
   log "DEBUG" "Message not a command: $text"
-  send_error  "DEBUG" "Message not a command: $text"
   exit
 fi
 
@@ -111,7 +110,6 @@ command="$(tr -dc [:alnum:]'_-' <<< "$command" | head -c 64)"
 if [ -z "$command" ]; then
   # this isn't a valid command, so bail
   log "DEBUG" "Command not valid: $text"
-  send_error  "DEBUG" "Command not valid: $text"
   exit
 fi
 
@@ -121,7 +119,6 @@ handler="$(grep -v "^#" "$handlers" | grep "^$command|" | head -1)"
 if [ -z "$handler" ]; then
   # no return, so this is not a command we recognise
   log "DEBUG" "Command not recognised: $text"
-  send_error  "DEBUG" "Command not recognised: $text"
   exit
 fi
 
@@ -138,8 +135,7 @@ export "$env_prefix"MESSAGE_ID="$message_id"
 export "$env_prefix"TEXT="$text"
 
 # yeah, this will run any code specified as a handler - security awareness is required
-reply="$($handler 2>&1)"
+reply="$($script_dir/$handler 2>&1)"
 
 send_reply "$from_id" "$reply" "$message_id"
 log "DEBUG" "Successful Response: $text --> $reply"
-send_error "DEBUG" "Successful Response: $text --> $reply"
